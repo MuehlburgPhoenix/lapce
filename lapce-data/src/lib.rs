@@ -21,6 +21,7 @@ pub mod keypress;
 pub mod list;
 pub mod markdown;
 pub mod menu;
+pub mod outline;
 pub mod palette;
 pub mod panel;
 pub mod picker;

@@ -49,9 +49,9 @@ use lsp_types::DiagnosticSeverity;
 use crate::{
     about::AboutBox, alert::AlertBox, completion::CompletionContainer,
     editor::view::LapceEditorView, explorer::FileExplorer, hover::HoverContainer,
-    message::LapceMessage, panel::PanelContainer, picker::FilePicker,
-    plugin::Plugin, problem::new_problem_panel, scroll::LapceScroll,
-    search::new_search_panel, signature::SignatureContainer,
+    message::LapceMessage, outline::new_outline_panel, panel::PanelContainer,
+    picker::FilePicker, plugin::Plugin, problem::new_problem_panel,
+    scroll::LapceScroll, search::new_search_panel, signature::SignatureContainer,
     source_control::new_source_control_panel, split::split_data_widget,
     status::LapceStatus, terminal::TerminalPanel, title::Title,
 };
@@ -188,6 +188,12 @@ impl LapceTab {
                         panel.insert_panel(
                             *kind,
                             WidgetPod::new(new_problem_panel(&data.problem).boxed()),
+                        );
+                    }
+                    PanelKind::Outline => {
+                        panel.insert_panel(
+                            *kind,
+                            WidgetPod::new(new_outline_panel(&data.outline).boxed()),
                         );
                     }
                 }

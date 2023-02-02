@@ -402,6 +402,10 @@ pub enum LapceWorkbenchCommand {
     #[strum(serialize = "toggle_problem_focus")]
     ToggleProblemFocus,
 
+    #[strum(message = "Toggle Outline Focus")]
+    #[strum(serialize = "toggle_outline_focus")]
+    ToggleOutlineFocus,
+
     #[strum(message = "Toggle Search Focus")]
     #[strum(serialize = "toggle_search_focus")]
     ToggleSearchFocus,
@@ -421,6 +425,9 @@ pub enum LapceWorkbenchCommand {
 
     #[strum(serialize = "toggle_problem_visual")]
     ToggleProblemVisual,
+
+    #[strum(serialize = "toggle_outline_visual")]
+    ToggleOutlineVisual,
 
     #[strum(serialize = "toggle_search_visual")]
     ToggleSearchVisual,

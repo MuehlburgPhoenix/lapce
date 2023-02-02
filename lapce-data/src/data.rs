@@ -67,6 +67,7 @@ use crate::{
     hover::HoverData,
     images::ImageCache,
     keypress::KeyPressData,
+    outline::OutlineData,
     palette::{PaletteData, PaletteType, PaletteViewData},
     panel::{
         PanelContainerPosition, PanelData, PanelKind, PanelOrder, PanelPosition,
@@ -290,6 +291,7 @@ impl LapceData {
             PanelPosition::BottomLeft,
             im::vector![PanelKind::Terminal, PanelKind::Search, PanelKind::Problem,],
         );
+        order.insert(PanelPosition::RightTop, im::vector![PanelKind::Outline]);
 
         order
     }
@@ -625,6 +627,7 @@ pub struct LapceTabData {
     pub find: Arc<Find>,
     pub source_control: Arc<SourceControlData>,
     pub problem: Arc<ProblemData>,
+    pub outline: Arc<OutlineData>,
     pub search: Arc<SearchData>,
     pub plugin: Arc<PluginData>,
     pub picker: Arc<FilePickerData>,
@@ -826,6 +829,7 @@ impl LapceTabData {
             event_sink.clone(),
         ));
         let problem = Arc::new(ProblemData::new());
+        let outline = Arc::new(OutlineData::new());
         let panel = workspace_info
             .map(|i| {
                 let mut panel = i.panel;
@@ -852,6 +856,7 @@ impl LapceTabData {
             terminal,
             plugin,
             problem,
+            outline,
             search,
             find: Arc::new(Find::new(0)),
             picker: file_picker,
@@ -1626,6 +1631,9 @@ impl LapceTabData {
             LapceWorkbenchCommand::ToggleProblemVisual => {
                 self.toggle_panel_visual(ctx, PanelKind::Problem);
             }
+            LapceWorkbenchCommand::ToggleOutlineVisual => {
+                self.toggle_panel_visual(ctx, PanelKind::Outline);
+            }
             LapceWorkbenchCommand::ToggleTerminalVisual => {
                 self.toggle_panel_visual(ctx, PanelKind::Terminal);
             }
@@ -1659,6 +1667,9 @@ impl LapceTabData {
             }
             LapceWorkbenchCommand::ToggleProblemFocus => {
                 self.toggle_panel_focus(ctx, PanelKind::Problem);
+            }
+            LapceWorkbenchCommand::ToggleOutlineFocus => {
+                self.toggle_panel_focus(ctx, PanelKind::Outline);
             }
             LapceWorkbenchCommand::ToggleTerminalFocus => {
                 self.toggle_panel_focus(ctx, PanelKind::Terminal);
@@ -2153,6 +2164,7 @@ impl LapceTabData {
             PanelKind::Terminal => self.terminal.widget_id,
             PanelKind::Search => self.search.active,
             PanelKind::Problem => self.problem.widget_id,
+            PanelKind::Outline => self.outline.widget_id,
         };
         if let PanelKind::Search = kind {
             ctx.submit_command(Command::new(
@@ -2183,7 +2195,10 @@ impl LapceTabData {
 
     fn toggle_panel_focus(&mut self, ctx: &mut EventCtx, kind: PanelKind) {
         let should_hide = match kind {
-            PanelKind::FileExplorer | PanelKind::Plugin | PanelKind::Problem => {
+            PanelKind::FileExplorer
+            | PanelKind::Plugin
+            | PanelKind::Problem
+            | PanelKind::Outline => {
                 // Some panels don't accept focus (yet). Fall back to visibility check
                 // in those cases.
                 self.panel.is_panel_visible(&kind)
